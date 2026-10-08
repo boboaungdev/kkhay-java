@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build & Test (Java ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [17, 21]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Run Tests
+        run: mvn clean test --no-transfer-progress
+

@@ -2,8 +2,6 @@ package com.kkhay;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.kkhay.exception.SignatureVerificationException;
-import com.kkhay.model.WebhookEvent;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

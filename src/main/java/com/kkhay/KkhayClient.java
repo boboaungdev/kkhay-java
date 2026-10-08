@@ -4,11 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kkhay.exception.KkhayApiException;
-import com.kkhay.model.CreateInvoiceRequest;
-import com.kkhay.model.Invoice;
-import com.kkhay.model.ListInvoicesRequest;
-import com.kkhay.model.ListInvoicesResponse;
 
 import java.io.IOException;
 import java.net.URI;

@@ -1,8 +1,6 @@
 package com.kkhay;
 
 import com.google.gson.Gson;
-import com.kkhay.exception.SignatureVerificationException;
-import com.kkhay.model.WebhookEvent;
 import org.junit.jupiter.api.Test;
 
 import javax.crypto.Mac;

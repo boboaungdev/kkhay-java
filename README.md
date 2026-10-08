@@ -43,12 +43,12 @@ implementation 'com.kkhay:kkhay:1.0.0'
 ### 1. Initialize the Client
 
 ```java
-import com.kkhay.KkhayClient;
+import com.kkhay.*; // Single import gives you access to everything!
 
-// Standard client using system defaults
-KkhayClient client = new KkhayClient("kkhay_live_your_api_key");
+// Initialize using Kkhay or KkhayClient
+Kkhay kkhay = new Kkhay("kkhay_live_your_api_key");
 
-// Or using the fluent builder
+// Or using fluent builder
 KkhayClient client = KkhayClient.builder()
     .apiKey("kkhay_live_your_api_key")
     .timeout(Duration.ofSeconds(15))
@@ -60,8 +60,7 @@ KkhayClient client = KkhayClient.builder()
 ### 2. Create a Payment Invoice
 
 ```java
-import com.kkhay.model.CreateInvoiceRequest;
-import com.kkhay.model.Invoice;
+import com.kkhay.*;
 import java.math.BigDecimal;
 
 CreateInvoiceRequest request = CreateInvoiceRequest.builder()
@@ -96,8 +95,7 @@ System.out.println("Invoice Status: " + invoice.getStatus());
 ### 4. List Invoices with Pagination
 
 ```java
-import com.kkhay.model.ListInvoicesRequest;
-import com.kkhay.model.ListInvoicesResponse;
+import com.kkhay.*;
 
 ListInvoicesRequest query = ListInvoicesRequest.builder()
     .status("paid")
@@ -134,8 +132,7 @@ client.createInvoiceAsync(request)
 Verify incoming Instant Payment Notifications (IPN) with constant-time HMAC-SHA256 signature verification:
 
 ```java
-import com.kkhay.Webhook;
-import com.kkhay.model.WebhookEvent;
+import com.kkhay.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

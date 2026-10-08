@@ -1,4 +1,4 @@
-package com.kkhay.model;
+package com.kkhay;
 
 import java.util.HashMap;
 import java.util.Map;

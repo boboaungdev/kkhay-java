@@ -1,4 +1,4 @@
-package com.kkhay.model;
+package com.kkhay;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;

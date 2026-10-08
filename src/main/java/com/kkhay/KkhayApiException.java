@@ -1,4 +1,4 @@
-package com.kkhay.exception;
+package com.kkhay;
 
 /**
  * Exception thrown when the K Khay API returns an error response.

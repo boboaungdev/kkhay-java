@@ -1,4 +1,4 @@
-package com.kkhay.exception;
+package com.kkhay;
 
 /**
  * Exception thrown when a K Khay webhook IPN signature cannot be verified.

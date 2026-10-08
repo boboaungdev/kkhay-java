@@ -1,6 +1,5 @@
 package com.kkhay;
 
-import com.kkhay.model.CreateInvoiceRequest;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -16,6 +15,9 @@ public class KkhayClientTest {
         assertEquals("kkhay_live_test_123", client.getApiKey());
         assertEquals("https://api.kkhay.com", client.getBaseUrl());
         assertEquals(Duration.ofSeconds(30), client.getTimeout());
+
+        Kkhay kkhay = new Kkhay("kkhay_live_test_123");
+        assertEquals("kkhay_live_test_123", kkhay.getApiKey());
     }
 
     @Test

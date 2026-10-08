@@ -53,8 +53,8 @@ jobs:
           echo "=== 2. Staged Files in central-staging ==="
           find target/central-staging -type f
 
-          echo "=== 3. Removing stray files in com/kkhay/kkhay ==="
-          find target/central-staging/com/kkhay/kkhay -maxdepth 1 -type f -exec rm -v {} + || true
+          echo "=== 3. Removing non-artifact files (_remote.repositories, metadata) ==="
+          find target/central-staging -type f ! -name "kkhay-1.0.0*" -exec rm -v {} + || true
 
           echo "=== 4. Packaging Sanitized Bundle ==="
           cd target/central-staging

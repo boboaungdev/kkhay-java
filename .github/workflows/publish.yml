@@ -29,6 +29,7 @@ jobs:
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
 
       - name: Publish to Maven Central
+        shell: bash
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
@@ -45,5 +46,55 @@ jobs:
             </servers>
           </settings>
           EOF
-          mvn clean deploy -P release --no-transfer-progress
+
+          echo "=== 1. Building and Staging Artifacts ==="
+          mvn clean deploy -P release -DskipPublishing=true --no-transfer-progress
+
+          echo "=== 2. Staged Files in central-staging ==="
+          find target/central-staging -type f
+
+          echo "=== 3. Removing stray files in com/kkhay/kkhay ==="
+          find target/central-staging/com/kkhay/kkhay -maxdepth 1 -type f -exec rm -v {} + || true
+
+          echo "=== 4. Packaging Sanitized Bundle ==="
+          cd target/central-staging
+          rm -f ../central-publishing/central-bundle.zip
+          mkdir -p ../central-publishing
+          zip -r ../central-publishing/central-bundle.zip com/
+          cd ../..
+
+          echo "=== 5. Final Verified Bundle Content ==="
+          unzip -l target/central-publishing/central-bundle.zip
+
+          echo "=== 6. Uploading to Sonatype Central Portal ==="
+          AUTH_HEADER="Bearer $(echo -n "${SONATYPE_USERNAME}:${SONATYPE_PASSWORD}" | base64 -w 0)"
+          DEPLOYMENT_ID=$(curl -sS --fail-with-body --request POST \
+            --header "Authorization: ${AUTH_HEADER}" \
+            --form "bundle=@target/central-publishing/central-bundle.zip" \
+            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC&name=com.kkhay:kkhay:1.0.0")
+
+          echo "Deployment ID: ${DEPLOYMENT_ID}"
+
+          echo "=== 7. Monitoring Publishing Status ==="
+          for i in {1..60}; do
+            STATUS_JSON=$(curl -sS --request POST \
+              --header "Authorization: ${AUTH_HEADER}" \
+              "https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID}")
+
+            STATE=$(echo "${STATUS_JSON}" | jq -r '.deploymentState // "UNKNOWN"')
+            echo "[Attempt ${i}/60] Current State: ${STATE}"
+
+            if [ "${STATE}" = "PUBLISHED" ] || [ "${STATE}" = "VALIDATED" ]; then
+              echo "Deployment successfully ${STATE}!"
+              exit 0
+            elif [ "${STATE}" = "FAILED" ]; then
+              echo "Deployment validation failed! Error details:"
+              echo "${STATUS_JSON}" | jq . || echo "${STATUS_JSON}"
+              exit 1
+            fi
+            sleep 10
+          done
+
+          echo "Timed out waiting for validation."
+          exit 1
 

@@ -5,6 +5,7 @@ Official Java, Kotlin, and Android SDK for the **[K Khay Sovereign Crypto Paymen
 Accept non-custodial and custodial crypto payments (USDT, USDC, BNB, ETH on BSC, Polygon, Arbitrum, Base, Ethereum) in **Java**, **Kotlin**, **Spring Boot**, **Quarkus**, **Micronaut**, and **Android** applications.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.kkhay/kkhay.svg)](https://central.sonatype.com/artifact/com.kkhay/kkhay)
+[![Java](https://img.shields.io/badge/Java-11%20%7C%2017%20%7C%2021%20%7C%2025%20(LTS)-orange.svg)](https://kkhay.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -174,11 +175,10 @@ public class KkhayWebhookController {
 Because the SDK is built with clean Java conventions, Kotlin developers enjoy seamless syntax:
 
 ```kotlin
-import com.kkhay.KkhayClient
-import com.kkhay.model.CreateInvoiceRequest
+import com.kkhay.*
 import java.math.BigDecimal
 
-val client = KkhayClient("kkhay_live_...")
+val client = Kkhay("kkhay_live_...")
 
 val request = CreateInvoiceRequest.builder()
     .priceAmount(BigDecimal("29.99"))

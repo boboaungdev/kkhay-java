@@ -3,6 +3,9 @@ name: Publish to Maven Central
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -48,13 +51,15 @@ jobs:
           EOF
 
           echo "=== 1. Building and Staging Artifacts ==="
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Target Release Version: ${VERSION}"
           mvn clean deploy -P release -DskipPublishing=true --no-transfer-progress
 
           echo "=== 2. Staged Files in central-staging ==="
           find target/central-staging -type f
 
           echo "=== 3. Removing non-artifact files (_remote.repositories, metadata) ==="
-          find target/central-staging -type f ! -name "kkhay-1.0.0*" -exec rm -v {} + || true
+          find target/central-staging -type f ! -name "kkhay-${VERSION}*" -exec rm -v {} + || true
 
           echo "=== 4. Packaging Sanitized Bundle ==="
           cd target/central-staging
@@ -71,7 +76,7 @@ jobs:
           DEPLOYMENT_ID=$(curl -sS --fail-with-body --request POST \
             --header "Authorization: ${AUTH_HEADER}" \
             --form "bundle=@target/central-publishing/central-bundle.zip" \
-            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC&name=com.kkhay:kkhay:1.0.0")
+            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC&name=com.kkhay:kkhay:${VERSION}")
 
           echo "Deployment ID: ${DEPLOYMENT_ID}"
 

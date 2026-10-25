@@ -4,37 +4,49 @@ import com.google.gson.annotations.SerializedName;
 import java.math.BigDecimal;
 
 /**
- * Represents a verified incoming IPN webhook event from K Khay.
+ * Represents a verified incoming IPN webhook event from K Khay Gateway.
  */
 public class WebhookEvent {
     @SerializedName("event")
     private String event;
 
-    @SerializedName("invoice_id")
+    @SerializedName(value = "invoice_id", alternate = {"invoiceId"})
     private String invoiceId;
 
-    @SerializedName("order_id")
+    @SerializedName(value = "gateway_id", alternate = {"gatewayId"})
+    private String gatewayId;
+
+    @SerializedName(value = "invoice_type", alternate = {"invoiceType"})
+    private String invoiceType;
+
+    @SerializedName(value = "order_id", alternate = {"orderId"})
     private String orderId;
 
-    @SerializedName("price_amount")
+    @SerializedName(value = "amount", alternate = {"price_amount", "priceAmount"})
+    private BigDecimal amount;
+
+    @SerializedName(value = "currency", alternate = {"price_currency", "priceCurrency"})
+    private String currency;
+
+    @SerializedName(value = "price_amount", alternate = {"priceAmount"})
     private BigDecimal priceAmount;
 
-    @SerializedName("price_currency")
+    @SerializedName(value = "price_currency", alternate = {"priceCurrency"})
     private String priceCurrency;
 
-    @SerializedName("pay_amount")
+    @SerializedName(value = "pay_amount", alternate = {"payAmount"})
     private String payAmount;
 
-    @SerializedName("pay_token")
+    @SerializedName(value = "pay_token", alternate = {"payToken"})
     private String payToken;
 
-    @SerializedName("pay_network")
+    @SerializedName(value = "pay_network", alternate = {"payNetwork"})
     private String payNetwork;
 
-    @SerializedName("deposit_address")
+    @SerializedName(value = "deposit_address", alternate = {"depositAddress"})
     private String depositAddress;
 
-    @SerializedName("tx_hash")
+    @SerializedName(value = "tx_hash", alternate = {"txHash"})
     private String txHash;
 
     @SerializedName("status")
@@ -51,14 +63,50 @@ public class WebhookEvent {
     public String getInvoiceId() { return invoiceId; }
     public void setInvoiceId(String invoiceId) { this.invoiceId = invoiceId; }
 
+    public String getGatewayId() { return gatewayId; }
+    public void setGatewayId(String gatewayId) { this.gatewayId = gatewayId; }
+
+    public String getInvoiceType() { return invoiceType; }
+    public void setInvoiceType(String invoiceType) { this.invoiceType = invoiceType; }
+
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
-    public BigDecimal getPriceAmount() { return priceAmount; }
-    public void setPriceAmount(BigDecimal priceAmount) { this.priceAmount = priceAmount; }
+    public BigDecimal getAmount() {
+        if (amount != null) return amount;
+        return priceAmount;
+    }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+        if (this.priceAmount == null) this.priceAmount = amount;
+    }
 
-    public String getPriceCurrency() { return priceCurrency; }
-    public void setPriceCurrency(String priceCurrency) { this.priceCurrency = priceCurrency; }
+    public String getCurrency() {
+        if (currency != null) return currency;
+        return priceCurrency;
+    }
+    public void setCurrency(String currency) {
+        this.currency = currency;
+        if (this.priceCurrency == null) this.priceCurrency = currency;
+    }
+
+    public BigDecimal getPriceAmount() {
+        if (priceAmount != null) return priceAmount;
+        return amount;
+    }
+    public void setPriceAmount(BigDecimal priceAmount) {
+        this.priceAmount = priceAmount;
+        if (this.amount == null) this.amount = priceAmount;
+    }
+
+    public String getPriceCurrency() {
+        if (priceCurrency != null) return priceCurrency;
+        return currency;
+    }
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
+        if (this.currency == null) this.currency = priceCurrency;
+    }
 
     public String getPayAmount() { return payAmount; }
     public void setPayAmount(String payAmount) { this.payAmount = payAmount; }
@@ -86,9 +134,9 @@ public class WebhookEvent {
         return "WebhookEvent{" +
                 "event='" + event + '\'' +
                 ", invoiceId='" + invoiceId + '\'' +
+                ", gatewayId='" + gatewayId + '\'' +
                 ", orderId='" + orderId + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }
 }
-

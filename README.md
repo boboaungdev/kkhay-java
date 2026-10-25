@@ -1,12 +1,34 @@
-# K Khay Java & Kotlin SDK ☕
+<div align="center">
 
-Official Java, Kotlin, and Android SDK for the **[K Khay Sovereign Crypto Payment Gateway](https://kkhay.com)**.
+# `kkhay-java`
 
-Accept non-custodial and custodial crypto payments (USDT, USDC, BNB, ETH on BSC, Polygon, Arbitrum, Base, Ethereum) in **Java**, **Kotlin**, **Spring Boot**, **Quarkus**, **Micronaut**, and **Android** applications.
+**Official Java, Kotlin, and Android SDK for K Khay — The Non-Custodial Crypto Payment Gateway**
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.kkhay/kkhay.svg)](https://central.sonatype.com/artifact/com.kkhay/kkhay)
-[![Java](https://img.shields.io/badge/Java-11%20%7C%2017%20%7C%2021%20%7C%2025%20(LTS)-orange.svg)](https://kkhay.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.kkhay/kkhay.svg?style=flat-square&color=10b981)](https://central.sonatype.com/artifact/com.kkhay/kkhay)
+[![CI](https://github.com/boboaungdev/kkhay-java/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/boboaungdev/kkhay-java/actions/workflows/ci.yml)
+[![Java](https://img.shields.io/badge/Java-11%20%7C%2017%20%7C%2021%20%7C%2025%20(LTS)-orange.svg?style=flat-square)](https://kkhay.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+
+Accept cryptocurrency payments across **190+ blockchain networks** and **500+ tokens** (EVM, Bitcoin, Solana, TON, Tron, and XRPL) with **zero custody** and automatic direct-to-wallet settlement in **Java**, **Kotlin**, **Spring Boot**, **Quarkus**, **Micronaut**, and **Android** applications.
+
+[Gateway Dashboard](https://gateway.kkhay.com) • [API Keys](https://gateway.kkhay.com/dashboard/keys) • [Website](https://kkhay.com)
+
+</div>
+
+---
+
+## ⚡ Key Highlights
+
+- 🛡️ **100% Non-Custodial**: Payments settle directly to your destination blockchain address in seconds. K Khay never holds your private keys or customer funds.
+- 🌐 **190+ Networks Supported**: 
+  - **EVM Networks**: Ethereum, BNB Smart Chain, Polygon, Arbitrum, Base, Optimism, Avalanche, and 180+ more.
+  - **UTXO Networks**: Bitcoin (`btc`), Dogecoin (`doge`), Litecoin (`ltc`), Bitcoin Cash (`bch`).
+  - **High-Throughput Chains**: Solana (`sol`), TON (`ton`), Tron (`trx`), XRP Ledger (`xrp`).
+- 🪙 **500+ Cryptocurrencies**: Native coins and tokens (USDT, USDC, BTC, ETH, SOL, TON, BNB, DOGE, XRP, TRX, LTC, and more).
+- 🔗 **Branded Hosted Checkouts**: Automatic payment links with dynamic QR codes, live blockchain polling, and wallet deep linking.
+- ⚡ **Dual Sync & Async APIs**: First-class synchronous methods and non-blocking `CompletableFuture` APIs.
+- 🔔 **Cryptographic Webhooks**: Timing-safe HMAC-SHA256 signature verification (`x-kkhay-signature`).
+- ☕ **Universal Compatibility**: Supports Java 11+, Java 17, Java 21, Java 25 (LTS), Kotlin, and Android.
 
 ---
 
@@ -19,118 +41,116 @@ Add the dependency to your `pom.xml`:
 <dependency>
     <groupId>com.kkhay</groupId>
     <artifactId>kkhay</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 
 ### Gradle (Kotlin DSL)
-Add the dependency to your `build.gradle.kts`:
+Add to your `build.gradle.kts`:
 
 ```kotlin
-implementation("com.kkhay:kkhay:1.0.0")
+implementation("com.kkhay:kkhay:1.0.4")
 ```
 
 ### Gradle (Groovy)
-Add the dependency to your `build.gradle`:
+Add to your `build.gradle`:
 
 ```groovy
-implementation 'com.kkhay:kkhay:1.0.0'
+implementation 'com.kkhay:kkhay:1.0.4'
 ```
 
 ---
 
-## ⚡ Quick Start
+## 🚀 Quickstart
 
 ### 1. Initialize the Client
 
+Generate your API key in the [K Khay Gateway Dashboard](https://gateway.kkhay.com/dashboard/keys).
+
 ```java
-import com.kkhay.*; // Single import gives you access to everything!
+import com.kkhay.*;
 
 // Initialize using Kkhay or KkhayClient
-Kkhay kkhay = new Kkhay("kkhay_live_your_api_key");
+Kkhay kkhay = new Kkhay("kkhay_live_your_api_key_here");
 
-// Or using fluent builder
+// Or using the fluent builder
 KkhayClient client = KkhayClient.builder()
-    .apiKey("kkhay_live_your_api_key")
+    .apiKey(System.getenv("KKHAY_API_KEY"))
     .timeout(Duration.ofSeconds(15))
     .build();
 ```
 
 ---
 
-### 2. Create a Payment Invoice
+### 2. Create a Crypto Payment Invoice
 
 ```java
 import com.kkhay.*;
 import java.math.BigDecimal;
 
 CreateInvoiceRequest request = CreateInvoiceRequest.builder()
-    .priceAmount(new BigDecimal("49.99"))
-    .priceCurrency("USD")
-    .payNetwork("bsc")
-    .payToken("USDT")
-    .orderId("ORDER-1001")
-    .title("E-Commerce Order #1001")
-    .customerEmail("buyer@example.com")
-    .redirectUrl("https://myshop.com/orders/1001/success")
-    .cancelUrl("https://myshop.com/orders/1001/cancel")
+    .amount(new BigDecimal("49.99"))
+    .currency("USD")
+    .payNetwork("bsc")       // "bsc", "polygon", "base", "arbitrum", "ethereum", "solana", "bitcoin", "ton"
+    .payToken("USDT")        // "USDT", "USDC", "BTC", "ETH", "SOL", "TON"
+    .orderId("ORDER-9842")
+    .title("Annual Pro Plan")
+    .customerName("Alice Smith")
+    .customerEmail("alice@example.com")
+    .redirectUrl("https://myshop.com/orders/success")
+    .cancelUrl("https://myshop.com/cart")
     .build();
 
 Invoice invoice = client.createInvoice(request);
 
 System.out.println("Invoice ID: " + invoice.getId());
-System.out.println("Checkout URL: " + invoice.getHostedUrl());
+System.out.println("Gateway ID: " + invoice.getGatewayId());
+System.out.println("Deposit Address: " + invoice.getDepositAddress());
+System.out.println("Hosted Checkout URL: " + invoice.getHostedUrl());
 ```
 
 ---
 
-### 3. Retrieve an Invoice
+### 3. Retrieve an Invoice & Blockchain Confirmations
 
 ```java
-Invoice invoice = client.getInvoice("inv_abc123");
-System.out.println("Invoice Status: " + invoice.getStatus());
-```
+Invoice invoice = client.getInvoice("inv_0192a3b4c5d6");
+System.out.println("Status: " + invoice.getStatus()); // "WAITING" | "PAID" | "EXPIRED" | "CANCELED"
 
----
-
-### 4. List Invoices with Pagination
-
-```java
-import com.kkhay.*;
-
-ListInvoicesRequest query = ListInvoicesRequest.builder()
-    .status("paid")
-    .limit(20)
-    .build();
-
-ListInvoicesResponse response = client.listInvoices(query);
-for (Invoice inv : response.getItems()) {
-    System.out.println(inv.getId() + " - " + inv.getStatus());
+// Or retrieve full transaction confirmation records
+GetInvoiceResponse details = client.getInvoiceDetails("inv_0192a3b4c5d6");
+for (PaymentRecord payment : details.getPayments()) {
+    System.out.println("Received: " + payment.getAmountReceived() + " on Tx: " + payment.getTxHash());
+    System.out.println("Confirmations: " + payment.getConfirmations() + ", Status: " + payment.getStatus());
 }
 ```
 
 ---
 
-### 5. Asynchronous Non-Blocking Calls
-
-Every method has a non-blocking `Async` counterpart returning `CompletableFuture`:
+### 4. List & Filter Invoices
 
 ```java
-client.createInvoiceAsync(request)
-    .thenAccept(invoice -> {
-        System.out.println("Created async invoice: " + invoice.getId());
-    })
-    .exceptionally(ex -> {
-        System.err.println("Failed: " + ex.getMessage());
-        return null;
-    });
+ListInvoicesRequest query = ListInvoicesRequest.builder()
+    .page(1)
+    .limit(20)
+    .status(InvoiceStatus.PAID)
+    .type(InvoiceType.PAYMENT)
+    .build();
+
+ListInvoicesResponse response = client.listInvoices(query);
+System.out.println("Total paid invoices: " + response.getTotalCount());
+for (Invoice inv : response.getItems()) {
+    System.out.println("- " + inv.getId() + ": " + inv.getAmount() + " " + inv.getCurrency());
+}
 ```
 
 ---
 
-## 🔐 Webhook / IPN Verification (Spring Boot Controller)
+### 5. Verify Incoming Webhooks (IPN)
 
-Verify incoming Instant Payment Notifications (IPN) with constant-time HMAC-SHA256 signature verification:
+When a customer pays and the transaction is confirmed on-chain, K Khay sends a cryptographically signed `POST` webhook to your server with the `x-kkhay-signature` header.
+
+#### In Spring Boot:
 
 ```java
 import com.kkhay.*;
@@ -149,47 +169,50 @@ public class KkhayWebhookController {
             @RequestBody String rawPayload,
             @RequestHeader("x-kkhay-signature") String signature) {
 
-        // Constant-time HMAC-SHA256 signature check & parsing
-        if (!Webhook.verifySignature(rawPayload, signature, ipnSecret)) {
+        try {
+            WebhookEvent event = Webhook.parseEvent(rawPayload, signature, ipnSecret);
+
+            if (WebhookEventType.PAYMENT_PAID.equals(event.getEvent()) ||
+                WebhookEventType.PAYMENT_FINISHED.equals(event.getEvent())) {
+                System.out.println("Payment confirmed for Invoice: " + event.getInvoiceId());
+                System.out.println("Gateway ID: " + event.getGatewayId());
+                System.out.println("Received " + event.getPayAmount() + " " + event.getPayToken() + " on " + event.getPayNetwork());
+                // Fulfill customer's order in your database
+            }
+
+            return ResponseEntity.ok("{\"ok\":true}");
+        } catch (SignatureVerificationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature");
         }
-
-        WebhookEvent event = Webhook.parseEvent(rawPayload, signature, ipnSecret);
-
-        if ("payment.finished".equals(event.getEvent())) {
-            String orderId = event.getOrderId();
-            String txHash = event.getTxHash();
-            // Fulfill your order in your database
-            System.out.println("Order " + orderId + " paid! Tx: " + txHash);
-        }
-
-        return ResponseEntity.ok("OK");
     }
 }
 ```
 
 ---
 
-## 🧪 Kotlin Usage
+## 🌐 Supported Networks & Families
 
-Because the SDK is built with clean Java conventions, Kotlin developers enjoy seamless syntax:
+| Network Family | Popular Chains | Supported Tokens |
+| :--- | :--- | :--- |
+| **EVM (180+ Chains)** | Ethereum, BNB Smart Chain, Polygon, Arbitrum, Base, Optimism, Avalanche | USDT, USDC, ETH, BNB, POL, AVAX, DAI, and all ERC-20s |
+| **UTXO** | Bitcoin, Dogecoin, Litecoin, Bitcoin Cash | BTC, DOGE, LTC, BCH |
+| **Solana** | Solana Mainnet | SOL, USDT, USDC |
+| **TON** | The Open Network | TON, USDT |
+| **Tron (TVM)** | Tron Mainnet | TRX, USDT |
+| **XRPL** | XRP Ledger | XRP |
 
-```kotlin
-import com.kkhay.*
-import java.math.BigDecimal
+---
 
-val client = Kkhay("kkhay_live_...")
+## 🛡️ Error Handling
 
-val request = CreateInvoiceRequest.builder()
-    .priceAmount(BigDecimal("29.99"))
-    .priceCurrency("USD")
-    .payNetwork("bsc")
-    .payToken("USDT")
-    .orderId("KOTLIN-1")
-    .build()
+The SDK throws structured `KkhayApiException` instances containing HTTP status codes and error details:
 
-val invoice = client.createInvoice(request)
-println("Checkout: ${invoice.hostedUrl}")
+```java
+try {
+    Invoice invoice = client.getInvoice("inv_nonexistent");
+} catch (KkhayApiException e) {
+    System.err.println("API Error HTTP " + e.getStatusCode() + " [" + e.getErrorCode() + "]: " + e.getMessage());
+}
 ```
 
 ---
@@ -197,4 +220,3 @@ println("Checkout: ${invoice.hostedUrl}")
 ## 📄 License
 
 MIT © [K Khay](https://kkhay.com)
-

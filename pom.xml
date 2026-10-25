@@ -6,11 +6,11 @@
 
     <groupId>com.kkhay</groupId>
     <artifactId>kkhay</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <name>kkhay</name>
-    <description>Official Java and Kotlin SDK for K Khay Sovereign Crypto Payment Gateway</description>
+    <description>Official Java and Kotlin SDK for K Khay — The Non-Custodial Crypto Payment Gateway</description>
     <url>https://kkhay.com</url>
 
     <licenses>

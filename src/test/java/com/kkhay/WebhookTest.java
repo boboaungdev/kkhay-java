@@ -30,8 +30,9 @@ public class WebhookTest {
     public void testVerifySignatureSuccess() throws Exception {
         String secret = "whsec_test_secret_123";
         Map<String, Object> data = new HashMap<>();
-        data.put("event", "payment.finished");
+        data.put("event", WebhookEventType.PAYMENT_PAID);
         data.put("invoice_id", "inv_123");
+        data.put("gateway_id", "gw_456");
         data.put("pay_amount", "50.00");
         data.put("pay_token", "USDT");
         String payload = GSON.toJson(data);
@@ -45,7 +46,7 @@ public class WebhookTest {
     @Test
     public void testVerifySignatureTamperedPayload() throws Exception {
         String secret = "whsec_test_secret_123";
-        String payload = "{\"event\":\"payment.finished\"}";
+        String payload = "{\"event\":\"payment.paid\"}";
         String signature = computeHmacHex(payload, secret);
 
         assertFalse(Webhook.verifySignature(payload + "tampered", signature, secret));
@@ -54,7 +55,7 @@ public class WebhookTest {
     @Test
     public void testVerifySignatureWrongSecret() throws Exception {
         String secret = "whsec_test_secret_123";
-        String payload = "{\"event\":\"payment.finished\"}";
+        String payload = "{\"event\":\"payment.paid\"}";
         String signature = computeHmacHex(payload, secret);
 
         assertFalse(Webhook.verifySignature(payload, signature, "wrong_secret"));
@@ -73,27 +74,36 @@ public class WebhookTest {
     public void testParseEventSuccess() throws Exception {
         String secret = "whsec_test_secret_123";
         Map<String, Object> data = new HashMap<>();
-        data.put("event", "payment.finished");
+        data.put("event", WebhookEventType.PAYMENT_PAID);
         data.put("invoice_id", "inv_abc");
+        data.put("gateway_id", "gw_987");
+        data.put("invoice_type", InvoiceType.PAYMENT);
         data.put("order_id", "ORD-999");
+        data.put("amount", 100.00);
+        data.put("currency", "USD");
         data.put("pay_amount", "100.00");
         data.put("pay_token", "USDT");
+        data.put("pay_network", "bsc");
+        data.put("status", InvoiceStatus.PAID);
         String payload = GSON.toJson(data);
 
         String signature = computeHmacHex(payload, secret);
 
         WebhookEvent event = Webhook.parseEvent(payload, signature, secret);
         assertNotNull(event);
-        assertEquals("payment.finished", event.getEvent());
+        assertEquals(WebhookEventType.PAYMENT_PAID, event.getEvent());
         assertEquals("inv_abc", event.getInvoiceId());
+        assertEquals("gw_987", event.getGatewayId());
         assertEquals("ORD-999", event.getOrderId());
         assertEquals("USDT", event.getPayToken());
+        assertEquals("bsc", event.getPayNetwork());
+        assertEquals(InvoiceStatus.PAID, event.getStatus());
     }
 
     @Test
     public void testParseEventInvalidSignatureThrowsException() {
         String secret = "whsec_test_secret_123";
-        String payload = "{\"event\":\"payment.finished\"}";
+        String payload = "{\"event\":\"payment.paid\"}";
         String invalidSignature = "invalid_hex_signature";
 
         assertThrows(SignatureVerificationException.class, () -> {
@@ -101,4 +111,3 @@ public class WebhookTest {
         });
     }
 }
-

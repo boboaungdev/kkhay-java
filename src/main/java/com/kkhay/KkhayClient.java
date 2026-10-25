@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -22,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 public class KkhayClient {
     public static final String DEFAULT_BASE_URL = "https://api.kkhay.com";
     public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
-    private static final String USER_AGENT = "kkhay-java/1.0.0";
+    private static final String USER_AGENT = "kkhay-java/1.0.4";
     private static final Gson GSON = new Gson();
 
     private final String apiKey;
@@ -68,7 +67,7 @@ public class KkhayClient {
     public Duration getTimeout() { return timeout; }
 
     /**
-     * Creates a new crypto payment invoice.
+     * Creates a new sovereign crypto payment invoice.
      *
      * @param request The invoice creation parameters.
      * @return The created {@link Invoice}.
@@ -79,7 +78,7 @@ public class KkhayClient {
     }
 
     /**
-     * Asynchronously creates a new crypto payment invoice.
+     * Asynchronously creates a new sovereign crypto payment invoice.
      *
      * @param request The invoice creation parameters.
      * @return A {@link CompletableFuture} returning the created {@link Invoice}.
@@ -90,7 +89,7 @@ public class KkhayClient {
         }
 
         String jsonBody = GSON.toJson(request);
-        HttpRequest httpRequest = newRequestBuilder("/v1/merchant/invoices")
+        HttpRequest httpRequest = newRequestBuilder("/v1/gateway/invoices")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
                 .build();
@@ -120,7 +119,7 @@ public class KkhayClient {
             throw new IllegalArgumentException("invoiceId is required");
         }
 
-        String path = "/v1/merchant/invoices/" + URLEncoder.encode(invoiceId.trim(), StandardCharsets.UTF_8);
+        String path = "/v1/gateway/invoices/" + URLEncoder.encode(invoiceId.trim(), StandardCharsets.UTF_8);
         HttpRequest httpRequest = newRequestBuilder(path)
                 .GET()
                 .build();
@@ -129,7 +128,36 @@ public class KkhayClient {
     }
 
     /**
-     * Lists merchant invoices with optional filters and pagination.
+     * Retrieves invoice details including all payment records and blockchain transaction confirmations.
+     *
+     * @param invoiceId The unique invoice identifier.
+     * @return The {@link GetInvoiceResponse} containing invoice and payment history.
+     */
+    public GetInvoiceResponse getInvoiceDetails(String invoiceId) {
+        return getInvoiceDetailsAsync(invoiceId).join();
+    }
+
+    /**
+     * Asynchronously retrieves invoice details including payment history.
+     *
+     * @param invoiceId The unique invoice identifier.
+     * @return A {@link CompletableFuture} returning the {@link GetInvoiceResponse}.
+     */
+    public CompletableFuture<GetInvoiceResponse> getInvoiceDetailsAsync(String invoiceId) {
+        if (invoiceId == null || invoiceId.trim().isEmpty()) {
+            throw new IllegalArgumentException("invoiceId is required");
+        }
+
+        String path = "/v1/gateway/invoices/" + URLEncoder.encode(invoiceId.trim(), StandardCharsets.UTF_8);
+        HttpRequest httpRequest = newRequestBuilder(path)
+                .GET()
+                .build();
+
+        return sendAsync(httpRequest, GetInvoiceResponse.class);
+    }
+
+    /**
+     * Lists gateway invoices with optional filters and pagination.
      *
      * @param request The query filter parameters.
      * @return A {@link ListInvoicesResponse}.
@@ -148,13 +176,13 @@ public class KkhayClient {
     }
 
     /**
-     * Asynchronously lists merchant invoices with optional filters and pagination.
+     * Asynchronously lists gateway invoices with optional filters and pagination.
      *
      * @param request The query filter parameters.
      * @return A {@link CompletableFuture} returning the {@link ListInvoicesResponse}.
      */
     public CompletableFuture<ListInvoicesResponse> listInvoicesAsync(ListInvoicesRequest request) {
-        StringBuilder pathBuilder = new StringBuilder("/v1/merchant/invoices");
+        StringBuilder pathBuilder = new StringBuilder("/v1/gateway/invoices");
 
         if (request != null) {
             Map<String, String> queryParams = request.toQueryParams();
@@ -217,6 +245,12 @@ public class KkhayClient {
                     }
 
                     try {
+                        if (responseType == Invoice.class) {
+                            JsonElement element = JsonParser.parseString(body);
+                            if (element.isJsonObject() && element.getAsJsonObject().has("invoice")) {
+                                return GSON.fromJson(element.getAsJsonObject().get("invoice"), responseType);
+                            }
+                        }
                         return GSON.fromJson(body, responseType);
                     } catch (Exception e) {
                         throw new KkhayApiException(statusCode, "Failed to parse API response: " + e.getMessage());
@@ -291,4 +325,3 @@ public class KkhayClient {
         }
     }
 }
-

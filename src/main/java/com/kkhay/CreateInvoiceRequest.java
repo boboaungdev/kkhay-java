@@ -8,37 +8,49 @@ import java.util.Map;
  * Request payload for creating a new K Khay payment invoice.
  */
 public class CreateInvoiceRequest {
-    @SerializedName("price_amount")
+    @SerializedName(value = "amount", alternate = {"priceAmount", "price_amount"})
+    private BigDecimal amount;
+
+    @SerializedName(value = "priceAmount", alternate = {"price_amount"})
     private BigDecimal priceAmount;
 
-    @SerializedName("price_currency")
+    @SerializedName(value = "currency", alternate = {"priceCurrency", "price_currency"})
+    private String currency;
+
+    @SerializedName(value = "priceCurrency", alternate = {"price_currency"})
     private String priceCurrency;
 
-    @SerializedName("pay_network")
+    @SerializedName(value = "payNetwork", alternate = {"pay_network"})
     private String payNetwork;
 
-    @SerializedName("pay_token")
+    @SerializedName(value = "payToken", alternate = {"pay_token"})
     private String payToken;
 
-    @SerializedName("order_id")
+    @SerializedName(value = "settlementAsset", alternate = {"settlement_asset"})
+    private String settlementAsset;
+
+    @SerializedName("type")
+    private String type;
+
+    @SerializedName(value = "orderId", alternate = {"order_id"})
     private String orderId;
 
     @SerializedName("title")
     private String title;
 
-    @SerializedName("description")
-    private String description;
+    @SerializedName(value = "customerName", alternate = {"customer_name"})
+    private String customerName;
 
-    @SerializedName("customer_email")
+    @SerializedName(value = "customerEmail", alternate = {"customer_email"})
     private String customerEmail;
 
-    @SerializedName("redirect_url")
+    @SerializedName(value = "redirectUrl", alternate = {"redirect_url"})
     private String redirectUrl;
 
-    @SerializedName("cancel_url")
+    @SerializedName(value = "cancelUrl", alternate = {"cancel_url"})
     private String cancelUrl;
 
-    @SerializedName("ipn_callback_url")
+    @SerializedName(value = "ipnCallbackUrl", alternate = {"ipn_callback_url"})
     private String ipnCallbackUrl;
 
     @SerializedName("metadata")
@@ -50,11 +62,41 @@ public class CreateInvoiceRequest {
         return new Builder();
     }
 
-    public BigDecimal getPriceAmount() { return priceAmount; }
-    public void setPriceAmount(BigDecimal priceAmount) { this.priceAmount = priceAmount; }
+    public BigDecimal getAmount() {
+        if (amount != null) return amount;
+        return priceAmount;
+    }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+        if (this.priceAmount == null) this.priceAmount = amount;
+    }
 
-    public String getPriceCurrency() { return priceCurrency; }
-    public void setPriceCurrency(String priceCurrency) { this.priceCurrency = priceCurrency; }
+    public BigDecimal getPriceAmount() {
+        if (priceAmount != null) return priceAmount;
+        return amount;
+    }
+    public void setPriceAmount(BigDecimal priceAmount) {
+        this.priceAmount = priceAmount;
+        if (this.amount == null) this.amount = priceAmount;
+    }
+
+    public String getCurrency() {
+        if (currency != null) return currency;
+        return priceCurrency;
+    }
+    public void setCurrency(String currency) {
+        this.currency = currency;
+        if (this.priceCurrency == null) this.priceCurrency = currency;
+    }
+
+    public String getPriceCurrency() {
+        if (priceCurrency != null) return priceCurrency;
+        return currency;
+    }
+    public void setPriceCurrency(String priceCurrency) {
+        this.priceCurrency = priceCurrency;
+        if (this.currency == null) this.currency = priceCurrency;
+    }
 
     public String getPayNetwork() { return payNetwork; }
     public void setPayNetwork(String payNetwork) { this.payNetwork = payNetwork; }
@@ -62,14 +104,20 @@ public class CreateInvoiceRequest {
     public String getPayToken() { return payToken; }
     public void setPayToken(String payToken) { this.payToken = payToken; }
 
+    public String getSettlementAsset() { return settlementAsset; }
+    public void setSettlementAsset(String settlementAsset) { this.settlementAsset = settlementAsset; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
 
     public String getCustomerEmail() { return customerEmail; }
     public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
@@ -89,6 +137,16 @@ public class CreateInvoiceRequest {
     public static class Builder {
         private final CreateInvoiceRequest request = new CreateInvoiceRequest();
 
+        public Builder amount(BigDecimal amount) {
+            request.setAmount(amount);
+            return this;
+        }
+
+        public Builder amount(double amount) {
+            request.setAmount(BigDecimal.valueOf(amount));
+            return this;
+        }
+
         public Builder priceAmount(BigDecimal priceAmount) {
             request.setPriceAmount(priceAmount);
             return this;
@@ -96,6 +154,11 @@ public class CreateInvoiceRequest {
 
         public Builder priceAmount(double priceAmount) {
             request.setPriceAmount(BigDecimal.valueOf(priceAmount));
+            return this;
+        }
+
+        public Builder currency(String currency) {
+            request.setCurrency(currency);
             return this;
         }
 
@@ -114,6 +177,16 @@ public class CreateInvoiceRequest {
             return this;
         }
 
+        public Builder settlementAsset(String settlementAsset) {
+            request.setSettlementAsset(settlementAsset);
+            return this;
+        }
+
+        public Builder type(String type) {
+            request.setType(type);
+            return this;
+        }
+
         public Builder orderId(String orderId) {
             request.setOrderId(orderId);
             return this;
@@ -124,8 +197,8 @@ public class CreateInvoiceRequest {
             return this;
         }
 
-        public Builder description(String description) {
-            request.setDescription(description);
+        public Builder customerName(String customerName) {
+            request.setCustomerName(customerName);
             return this;
         }
 
@@ -155,14 +228,23 @@ public class CreateInvoiceRequest {
         }
 
         public CreateInvoiceRequest build() {
-            if (request.getPriceAmount() == null) {
-                throw new IllegalArgumentException("priceAmount is required");
+            BigDecimal amt = request.getAmount();
+            if (amt == null || amt.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Amount (or priceAmount) must be greater than 0");
             }
-            if (request.getPriceCurrency() == null || request.getPriceCurrency().trim().isEmpty()) {
-                throw new IllegalArgumentException("priceCurrency is required");
+            if (request.getPayNetwork() == null || request.getPayNetwork().trim().isEmpty()) {
+                throw new IllegalArgumentException("payNetwork is required (e.g. 'bsc', 'polygon', 'solana')");
+            }
+            if (request.getPayToken() == null || request.getPayToken().trim().isEmpty()) {
+                throw new IllegalArgumentException("payToken is required (e.g. 'USDT', 'USDC', 'BTC', 'ETH')");
+            }
+            if (request.getCurrency() == null || request.getCurrency().trim().isEmpty()) {
+                request.setCurrency("USD");
+            }
+            if (request.getType() == null || request.getType().trim().isEmpty()) {
+                request.setType(InvoiceType.PAYMENT);
             }
             return request;
         }
     }
 }
-

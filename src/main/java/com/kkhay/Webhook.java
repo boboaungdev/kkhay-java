@@ -24,7 +24,7 @@ public final class Webhook {
      *
      * @param payload   The raw UTF-8 request body string.
      * @param signature The signature string from the {@code x-kkhay-signature} header.
-     * @param ipnSecret Your merchant IPN webhook secret key.
+     * @param ipnSecret Your gateway IPN webhook secret key.
      * @return {@code true} if the signature is valid; {@code false} otherwise.
      */
     public static boolean verifySignature(String payload, String signature, String ipnSecret) {
@@ -61,7 +61,7 @@ public final class Webhook {
      *
      * @param payload   The raw request body string.
      * @param signature The signature from the {@code x-kkhay-signature} header.
-     * @param ipnSecret Your merchant IPN webhook secret key.
+     * @param ipnSecret Your gateway IPN webhook secret key.
      * @return The parsed {@link WebhookEvent}.
      * @throws SignatureVerificationException If signature verification fails.
      */
@@ -99,4 +99,3 @@ public final class Webhook {
         return sb.toString();
     }
 }
-

@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Filter parameters for querying invoices.
+ * Filter parameters for querying and paginating gateway invoices.
  */
 public class ListInvoicesRequest {
-    private String status;
+    private Integer page;
     private Integer limit;
-    private String startingAfter;
-    private String endingBefore;
+    private String status;
+    private String type;
+    private String search;
 
     public ListInvoicesRequest() {}
 
@@ -18,32 +19,36 @@ public class ListInvoicesRequest {
         return new Builder();
     }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Integer getPage() { return page; }
+    public void setPage(Integer page) { this.page = page; }
 
     public Integer getLimit() { return limit; }
     public void setLimit(Integer limit) { this.limit = limit; }
 
-    public String getStartingAfter() { return startingAfter; }
-    public void setStartingAfter(String startingAfter) { this.startingAfter = startingAfter; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getEndingBefore() { return endingBefore; }
-    public void setEndingBefore(String endingBefore) { this.endingBefore = endingBefore; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public String getSearch() { return search; }
+    public void setSearch(String search) { this.search = search; }
 
     public Map<String, String> toQueryParams() {
         Map<String, String> params = new HashMap<>();
-        if (status != null && !status.isEmpty()) params.put("status", status);
-        if (limit != null) params.put("limit", String.valueOf(limit));
-        if (startingAfter != null && !startingAfter.isEmpty()) params.put("starting_after", startingAfter);
-        if (endingBefore != null && !endingBefore.isEmpty()) params.put("ending_before", endingBefore);
+        if (page != null && page > 0) params.put("page", String.valueOf(page));
+        if (limit != null && limit > 0) params.put("limit", String.valueOf(limit));
+        if (status != null && !status.trim().isEmpty()) params.put("status", status.trim());
+        if (type != null && !type.trim().isEmpty()) params.put("type", type.trim());
+        if (search != null && !search.trim().isEmpty()) params.put("search", search.trim());
         return params;
     }
 
     public static class Builder {
         private final ListInvoicesRequest request = new ListInvoicesRequest();
 
-        public Builder status(String status) {
-            request.setStatus(status);
+        public Builder page(int page) {
+            request.setPage(page);
             return this;
         }
 
@@ -52,13 +57,18 @@ public class ListInvoicesRequest {
             return this;
         }
 
-        public Builder startingAfter(String startingAfter) {
-            request.setStartingAfter(startingAfter);
+        public Builder status(String status) {
+            request.setStatus(status);
             return this;
         }
 
-        public Builder endingBefore(String endingBefore) {
-            request.setEndingBefore(endingBefore);
+        public Builder type(String type) {
+            request.setType(type);
+            return this;
+        }
+
+        public Builder search(String search) {
+            request.setSearch(search);
             return this;
         }
 
@@ -67,4 +77,3 @@ public class ListInvoicesRequest {
         }
     }
 }
-

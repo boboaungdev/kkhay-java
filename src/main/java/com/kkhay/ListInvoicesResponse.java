@@ -5,42 +5,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Paginated response containing a list of invoices.
+ * Paginated response containing a list of gateway invoices.
  */
 public class ListInvoicesResponse {
+    @SerializedName("ok")
+    private boolean ok;
+
     @SerializedName("items")
     private List<Invoice> items = new ArrayList<>();
 
-    @SerializedName("has_more")
-    private boolean hasMore;
+    @SerializedName(value = "totalCount", alternate = {"total", "total_count"})
+    private int totalCount;
 
-    @SerializedName("total")
-    private Integer total;
+    @SerializedName(value = "totalPages", alternate = {"total_pages"})
+    private int totalPages;
+
+    @SerializedName(value = "currentPage", alternate = {"current_page", "page"})
+    private int currentPage;
+
+    @SerializedName("limit")
+    private int limit;
 
     public ListInvoicesResponse() {}
 
-    public List<Invoice> getItems() {
-        return items;
-    }
+    public boolean isOk() { return ok; }
+    public void setOk(boolean ok) { this.ok = ok; }
 
-    public void setItems(List<Invoice> items) {
-        this.items = items;
-    }
+    public List<Invoice> getItems() { return items; }
+    public void setItems(List<Invoice> items) { this.items = items; }
+
+    public int getTotalCount() { return totalCount; }
+    public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
+
+    public int getTotalPages() { return totalPages; }
+    public void setTotalPages(int totalPages) { this.totalPages = totalPages; }
+
+    public int getCurrentPage() { return currentPage; }
+    public void setCurrentPage(int currentPage) { this.currentPage = currentPage; }
+
+    public int getLimit() { return limit; }
+    public void setLimit(int limit) { this.limit = limit; }
 
     public boolean isHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(boolean hasMore) {
-        this.hasMore = hasMore;
-    }
-
-    public Integer getTotal() {
-        return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
+        return totalPages > 0 && currentPage < totalPages;
     }
 }
-

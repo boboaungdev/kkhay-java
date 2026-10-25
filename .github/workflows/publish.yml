@@ -89,8 +89,8 @@ jobs:
             STATE=$(echo "${STATUS_JSON}" | jq -r '.deploymentState // "UNKNOWN"')
             echo "[Attempt ${i}/60] Current State: ${STATE}"
 
-            if [ "${STATE}" = "PUBLISHED" ] || [ "${STATE}" = "VALIDATED" ]; then
-              echo "Deployment successfully ${STATE}!"
+            if [ "${STATE}" = "PUBLISHED" ] || [ "${STATE}" = "VALIDATED" ] || [ "${STATE}" = "PUBLISHING" ]; then
+              echo "Deployment successfully ${STATE} on Sonatype Central!"
               exit 0
             elif [ "${STATE}" = "FAILED" ]; then
               echo "Deployment validation failed! Error details:"

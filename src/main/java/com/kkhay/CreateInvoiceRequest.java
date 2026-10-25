@@ -11,14 +11,8 @@ public class CreateInvoiceRequest {
     @SerializedName(value = "amount", alternate = {"priceAmount", "price_amount"})
     private BigDecimal amount;
 
-    @SerializedName(value = "priceAmount", alternate = {"price_amount"})
-    private BigDecimal priceAmount;
-
     @SerializedName(value = "currency", alternate = {"priceCurrency", "price_currency"})
     private String currency;
-
-    @SerializedName(value = "priceCurrency", alternate = {"price_currency"})
-    private String priceCurrency;
 
     @SerializedName(value = "payNetwork", alternate = {"pay_network"})
     private String payNetwork;
@@ -62,41 +56,17 @@ public class CreateInvoiceRequest {
         return new Builder();
     }
 
-    public BigDecimal getAmount() {
-        if (amount != null) return amount;
-        return priceAmount;
-    }
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-        if (this.priceAmount == null) this.priceAmount = amount;
-    }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public BigDecimal getPriceAmount() {
-        if (priceAmount != null) return priceAmount;
-        return amount;
-    }
-    public void setPriceAmount(BigDecimal priceAmount) {
-        this.priceAmount = priceAmount;
-        if (this.amount == null) this.amount = priceAmount;
-    }
+    public BigDecimal getPriceAmount() { return amount; }
+    public void setPriceAmount(BigDecimal priceAmount) { this.amount = priceAmount; }
 
-    public String getCurrency() {
-        if (currency != null) return currency;
-        return priceCurrency;
-    }
-    public void setCurrency(String currency) {
-        this.currency = currency;
-        if (this.priceCurrency == null) this.priceCurrency = currency;
-    }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
-    public String getPriceCurrency() {
-        if (priceCurrency != null) return priceCurrency;
-        return currency;
-    }
-    public void setPriceCurrency(String priceCurrency) {
-        this.priceCurrency = priceCurrency;
-        if (this.currency == null) this.currency = priceCurrency;
-    }
+    public String getPriceCurrency() { return currency; }
+    public void setPriceCurrency(String priceCurrency) { this.currency = priceCurrency; }
 
     public String getPayNetwork() { return payNetwork; }
     public void setPayNetwork(String payNetwork) { this.payNetwork = payNetwork; }

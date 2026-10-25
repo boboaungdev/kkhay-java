@@ -29,12 +29,6 @@ public class Invoice {
     @SerializedName(value = "currency", alternate = {"priceCurrency", "price_currency"})
     private String currency;
 
-    @SerializedName(value = "priceAmount", alternate = {"price_amount"})
-    private BigDecimal priceAmount;
-
-    @SerializedName(value = "priceCurrency", alternate = {"price_currency"})
-    private String priceCurrency;
-
     @SerializedName(value = "settlementAsset", alternate = {"settlement_asset"})
     private String settlementAsset;
 
@@ -121,41 +115,17 @@ public class Invoice {
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public BigDecimal getAmount() {
-        if (amount != null) return amount;
-        return priceAmount;
-    }
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-        if (this.priceAmount == null) this.priceAmount = amount;
-    }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public String getCurrency() {
-        if (currency != null) return currency;
-        return priceCurrency;
-    }
-    public void setCurrency(String currency) {
-        this.currency = currency;
-        if (this.priceCurrency == null) this.priceCurrency = currency;
-    }
+    public BigDecimal getPriceAmount() { return amount; }
+    public void setPriceAmount(BigDecimal priceAmount) { this.amount = priceAmount; }
 
-    public BigDecimal getPriceAmount() {
-        if (priceAmount != null) return priceAmount;
-        return amount;
-    }
-    public void setPriceAmount(BigDecimal priceAmount) {
-        this.priceAmount = priceAmount;
-        if (this.amount == null) this.amount = priceAmount;
-    }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
-    public String getPriceCurrency() {
-        if (priceCurrency != null) return priceCurrency;
-        return currency;
-    }
-    public void setPriceCurrency(String priceCurrency) {
-        this.priceCurrency = priceCurrency;
-        if (this.currency == null) this.currency = priceCurrency;
-    }
+    public String getPriceCurrency() { return currency; }
+    public void setPriceCurrency(String priceCurrency) { this.currency = priceCurrency; }
 
     public String getSettlementAsset() { return settlementAsset; }
     public void setSettlementAsset(String settlementAsset) { this.settlementAsset = settlementAsset; }
@@ -232,8 +202,8 @@ public class Invoice {
                 "id='" + id + '\'' +
                 ", gatewayId='" + gatewayId + '\'' +
                 ", orderId='" + orderId + '\'' +
-                ", amount=" + getAmount() +
-                ", currency='" + getCurrency() + '\'' +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
                 ", status='" + status + '\'' +
                 ", hostedUrl='" + hostedUrl + '\'' +
                 '}';

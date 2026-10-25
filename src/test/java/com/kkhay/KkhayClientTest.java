@@ -68,6 +68,20 @@ public class KkhayClientTest {
     }
 
     @Test
+    public void testCreateInvoiceRequestBuilderWithPriceAmount() {
+        CreateInvoiceRequest request = CreateInvoiceRequest.builder()
+                .priceAmount(25.0)
+                .priceCurrency("USD")
+                .payNetwork("solana")
+                .payToken("SOL")
+                .build();
+
+        assertEquals(0, BigDecimal.valueOf(25.0).compareTo(request.getAmount()));
+        assertEquals(0, BigDecimal.valueOf(25.0).compareTo(request.getPriceAmount()));
+        assertEquals("USD", request.getCurrency());
+    }
+
+    @Test
     public void testCreateInvoiceRequestValidation() {
         // Missing amount
         assertThrows(IllegalArgumentException.class, () -> {

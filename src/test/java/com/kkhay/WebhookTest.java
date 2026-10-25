@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,6 +99,31 @@ public class WebhookTest {
         assertEquals("USDT", event.getPayToken());
         assertEquals("bsc", event.getPayNetwork());
         assertEquals(InvoiceStatus.PAID, event.getStatus());
+        assertNotNull(event.getAmount());
+        assertEquals(0, new BigDecimal("100.00").compareTo(event.getAmount()));
+        assertEquals(0, new BigDecimal("100.00").compareTo(event.getPriceAmount()));
+        assertEquals("USD", event.getCurrency());
+        assertEquals("USD", event.getPriceCurrency());
+    }
+
+    @Test
+    public void testParseEventLegacyPayload() throws Exception {
+        String secret = "whsec_test_secret_123";
+        Map<String, Object> data = new HashMap<>();
+        data.put("event", "payment.finished");
+        data.put("invoice_id", "inv_legacy");
+        data.put("price_amount", 50.00);
+        data.put("price_currency", "USD");
+        data.put("pay_token", "USDT");
+        String payload = GSON.toJson(data);
+
+        String signature = computeHmacHex(payload, secret);
+
+        WebhookEvent event = Webhook.parseEvent(payload, signature, secret);
+        assertNotNull(event);
+        assertEquals(0, new BigDecimal("50.00").compareTo(event.getAmount()));
+        assertEquals(0, new BigDecimal("50.00").compareTo(event.getPriceAmount()));
+        assertEquals("USD", event.getCurrency());
     }
 
     @Test

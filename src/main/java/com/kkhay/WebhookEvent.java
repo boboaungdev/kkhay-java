@@ -28,12 +28,6 @@ public class WebhookEvent {
     @SerializedName(value = "currency", alternate = {"price_currency", "priceCurrency"})
     private String currency;
 
-    @SerializedName(value = "price_amount", alternate = {"priceAmount"})
-    private BigDecimal priceAmount;
-
-    @SerializedName(value = "price_currency", alternate = {"priceCurrency"})
-    private String priceCurrency;
-
     @SerializedName(value = "pay_amount", alternate = {"payAmount"})
     private String payAmount;
 
@@ -72,41 +66,17 @@ public class WebhookEvent {
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
-    public BigDecimal getAmount() {
-        if (amount != null) return amount;
-        return priceAmount;
-    }
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-        if (this.priceAmount == null) this.priceAmount = amount;
-    }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public String getCurrency() {
-        if (currency != null) return currency;
-        return priceCurrency;
-    }
-    public void setCurrency(String currency) {
-        this.currency = currency;
-        if (this.priceCurrency == null) this.priceCurrency = currency;
-    }
+    public BigDecimal getPriceAmount() { return amount; }
+    public void setPriceAmount(BigDecimal priceAmount) { this.amount = priceAmount; }
 
-    public BigDecimal getPriceAmount() {
-        if (priceAmount != null) return priceAmount;
-        return amount;
-    }
-    public void setPriceAmount(BigDecimal priceAmount) {
-        this.priceAmount = priceAmount;
-        if (this.amount == null) this.amount = priceAmount;
-    }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
-    public String getPriceCurrency() {
-        if (priceCurrency != null) return priceCurrency;
-        return currency;
-    }
-    public void setPriceCurrency(String priceCurrency) {
-        this.priceCurrency = priceCurrency;
-        if (this.currency == null) this.currency = priceCurrency;
-    }
+    public String getPriceCurrency() { return currency; }
+    public void setPriceCurrency(String priceCurrency) { this.currency = priceCurrency; }
 
     public String getPayAmount() { return payAmount; }
     public void setPayAmount(String payAmount) { this.payAmount = payAmount; }
@@ -136,6 +106,8 @@ public class WebhookEvent {
                 ", invoiceId='" + invoiceId + '\'' +
                 ", gatewayId='" + gatewayId + '\'' +
                 ", orderId='" + orderId + '\'' +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }
